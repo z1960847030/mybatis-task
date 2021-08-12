@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ditian.mapper.DeptEmpMapper">
+
+    <insert id="addEmployee">
+        insert into employees
+            (emp_no, birth_date,first_name, last_name,gender,hire_date)
+        values (#{empNo},#{birthDate},#{firstName},#{lastName},#{gender},#{hireDate})
+    </insert>
+
+    <delete id="deleteEmployee">
+        delete from employees where emp_no = #{empNo}
+    </delete>
+
+    <update id="upadteEmployee">
+        update employees
+        set emp_no=#{empNo},birth_date=#{birthDate},
+            first_name=#{firstName},last_name=#{lastName},
+            gender=#{gender},hire_date=#{hireDate}
+        where emp_no = #{empNo};
+    </update>
+
+    <select id="querydeptEmpById" resultMap="deptEmp">
+        select emp.emp_no,d.dept_no,dept_name,
+               first_name,last_name,gender,hire_date,birth_date,
+               d_e.from_date,d_e.to_date,
+               title
+        from employees.employees emp,
+             dept_emp d_e,
+             titles t,
+             departments d
+        where emp.emp_no = t.emp_no
+          and emp.emp_no = d_e.emp_no
+          and d.dept_no = d_e.dept_no
+          and emp.emp_no = 10001
+    </select>
+
+    <resultMap id="deptEmp" type="com.ditian.pojo.DeptEmp">
+        <result column="emp_no" property="empNo"/>
+        <result column="dept_no" property="deptNo"/>
+        <result column="from_date" property="fromDate"/>
+        <result column="to_date" property="toDate"/>
+        <result column="first_name" property="firstName"/>
+        <result column="last_name" property="lastName"/>
+        <result column="gender" property="gender"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="hire_date" property="hireDate"/>
+        <result column="hire_date" property="birthDate"/>
+    </resultMap>
+
+
+    <select id="querydeptManager" resultMap="deptManager">
+        select emp_no,d.dept_no,from_date,to_date,dept_name
+        from dept_manager dm,departments d
+        where dm.dept_no = d.dept_no
+    </select>
+
+    <select id="querydeptManagerById" resultMap="deptManager">
+        select d_m.emp_no, d.dept_no ,d.dept_name,
+               d_m.from_date,d_m.to_date
+        from departments d,dept_manager d_m
+        where d.dept_no = d_m.dept_no
+          and emp_no = #{empNo}
+    </select>
+
+    <resultMap id="deptManager" type="com.ditian.pojo.DeptManager">
+        <result column="dept_no" property="deptNo"/>
+        <result column="emp_no" property="empNo"/>
+        <result column="from_date" property="fromDate"/>
+        <result column="to_date" property="toDate"/>
+        <result column="dept_name" property="deptName"/>
+    </resultMap>
+
+
+</mapper>
